@@ -8,7 +8,7 @@
 #endif
 #include "eeconfig.h"
 #include "config.h"
-
+#define M_LOGIN M(0)
 extern keymap_config_t keymap_config;
 
 // Each layer gets a name for readability, which is then used in the keymap matrix below.
@@ -18,7 +18,8 @@ extern keymap_config_t keymap_config;
 
 enum {
   TD_LSFT_LPRN = 0,
-  TD_ENT_RPRN = 1
+  TD_ENT_RPRN = 1,
+
 
 };
 
@@ -62,8 +63,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_QWERTY] = {
-  {KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC},
-  {KC_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT},
+  {KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC},
+  {KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT},
   {TD(TD_LSFT_LPRN), KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, TD(TD_ENT_RPRN) },
   {BACKLIT, KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT}
 },
@@ -119,7 +120,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   {KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_CIRC, KC_AMPR,    KC_ASTR,    KC_LPRN, KC_RPRN, KC_BSPC},
   {KC_DEL,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_UNDS,    KC_PLUS,    KC_LCBR, KC_RCBR, KC_PIPE},
   {_______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  S(KC_NUHS), S(KC_NUBS), KC_HOME, KC_END,  _______},
-  {_______, _______, _______, _______, _______, _______, _______, _______,    KC_MNXT,    KC_VOLD, KC_VOLU, KC_MPLY}
+  {_______, _______, _______, _______, _______, M_LOGIN, _______, _______,    KC_MNXT,    KC_VOLD, KC_VOLU, KC_MPLY}
 },
 
 /* Raise
@@ -313,6 +314,16 @@ void matrix_init_user(void) {
         startup_user();
     #endif
 }
+
+const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt){
+  if(record->event.pressed){
+    switch(id){
+      case 0:
+        return MACRO(D(LCTL),D(LALT),T(DEL),U(LALT),U(LCTL), END);
+    }
+  }
+  return MACRO_NONE;
+};
 
 #ifdef AUDIO_ENABLE
 
